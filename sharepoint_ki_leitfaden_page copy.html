@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KI-Leitfaden – DES Workspace</title>
+<style>
+  :root {
+    --dark-blue: #0B0F14;
+    --moss: #144B46;
+    --off-white: #FBFBFB;
+    --light-grey: #DBDBDB;
+    --grey: #7A7A7A;
+    --danger: #D92D20;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--off-white); color: var(--dark-blue); margin: 0; scroll-behavior: smooth; }
+  header { background: linear-gradient(120deg, var(--dark-blue), var(--moss)); color: var(--off-white); text-align: center; padding: 40px 20px; position: static; top: auto; z-index: 1; box-shadow: none; }
+  h1 { font-size: 2.6rem; margin-bottom: 10px; }
+  p.lead { font-size: 1.2rem; opacity: 0.9; }
+  section { padding: 60px 40px; max-width: 1200px; margin: 40px auto; border-radius: 20px; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.07); }
+  h2 { color: var(--moss); margin-top: 0; border-left: 6px solid var(--moss); padding-left: 10px; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start; position: relative; }
+  .two-col::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: var(--light-grey); transform: translateX(-50%); opacity: 1; box-shadow: 0 0 0 1px rgba(0,0,0,0.02); border-radius: 4px; }
+  .col { padding: 0 8px; }
+  .col-head { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom: 18px; }
+  .pill { padding: 6px 10px; border-radius: 999px; font-weight: 800; font-size: .78rem; letter-spacing:.02em }
+  .pill-do { background: var(--moss); color: var(--off-white); }
+  .pill-dont { background: var(--danger); color: #fff; }
+
+  .flip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .flip-card { perspective: 1000px; -webkit-perspective: 1000px; }
+  .flip-inner { position: relative; width: 100%; height: 180px; transition: transform 0.3s ease; transform-style: preserve-3d; -webkit-transform-style: preserve-3d; cursor: pointer; outline: none; }
+  .flip-inner.flipped { transform: rotateY(180deg); }
+  .flip-front, .flip-back { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border:1px solid #E6E8EA; }
+  .flip-front.do { background: #E8EFEA; border-color: #C8DACF; }
+  .flip-front.dont { background: #FDEBEB; border-color: #F4C6C6; }
+  .flip-front h3 { margin: 0; font-size: 1rem; line-height:1.3; max-width: 90%; }
+  .flip-back { background: #fff; transform: rotateY(180deg); }
+  .flip-back p { margin: 0; font-size: .95rem; line-height: 1.35; max-width: 90%; }
+  .flip-card:hover { animation: float 1.5s ease-in-out infinite; }
+
+  .status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+  .status-card{border:1px solid #E6E8EA;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.05);padding:16px;background:#fff;cursor:pointer;outline:none}
+  .status-head{display:flex;align-items:center;gap:10px;margin-bottom:6px;justify-content:flex-start}
+  .status-badge{display:inline-block;font-weight:800;font-size:.78rem;padding:6px 10px;border-radius:999px}
+  .status-badge.allow{background:var(--moss);color:var(--off-white)}
+  .status-badge.restrict{background:var(--grey);color:#fff}
+  .status-badge.ban{background:var(--danger);color:#fff}
+  .status-card h3{margin:0;font-size:1rem}
+  .status-card .status-content{display:none;margin-top:10px;color:#1f2937}
+  .status-card.open .status-content{display:block}
+  .status-note{margin-top:14px;font-size:.92rem;color:#374151}
+
+  .checkcards{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .checkcard{border:1px solid #E6E8EA;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.06);padding:20px;background:#fff}
+  .checkcard-head h3{margin:0 0 6px 0}
+  .checkcard .sub{color:#4B5563;margin:0 0 12px 0}
+  .q-list{display:flex;flex-direction:column;gap:12px}
+  .q-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:#F7F7F8;border:1px solid #ECEDEF;border-radius:12px;padding:12px}
+  .q-text span{color:#4B5563}
+  .q-hint{grid-column:1/-1;color:#6B7280;font-size:.9rem}
+  .q-toggle{display:flex;align-items:center}
+  .q-toggle input{display:none}
+  .q-toggle label{width:54px;height:30px;background:#D1D5DB;border-radius:999px;position:relative;cursor:pointer;transition:.2s}
+  .q-toggle label::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s}
+  .q-toggle input:checked+label{background:var(--moss)}
+  .q-toggle input:checked+label::after{left:27px}
+  .q-footer{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+  .progress{width:100%;height:8px;background:#EEF2F3;border-radius:999px;overflow:hidden}
+  .progress .bar{height:100%;background:linear-gradient(90deg,var(--moss),#3fb292);width:0%}
+  .status{font-weight:700}
+  .status.ok{color:var(--moss)}
+  .status.warn{color:var(--danger)}
+  .hintbox{background:#FFF7ED;border:1px solid #FFE3C1;border-radius:12px;padding:12px;color:#92400E}
+
+  .faq-item { border-bottom: 1px solid var(--light-grey); padding: 14px 0; }
+  .faq-item h4 { margin: 0; color: var(--moss); cursor: pointer; }
+  .faq-item p { display: none; margin-top: 8px; }
+  .faq-item.active p { display: block; }
+  .feedback-section { display:block; text-align:center; margin-top:60px; }
+  .faq-feedback-text { font-size:1.1rem; color: var(--dark-blue); margin-bottom: 20px; }
+
+  .button { display: inline-block; background: var(--moss); color: var(--off-white); font-weight: 600; padding: 14px 28px; border-radius: 8px; text-decoration: none; }
+  :focus-visible { outline: 3px solid var(--moss); outline-offset: 2px; }
+
+  @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-3px);} }
+
+  @media (prefers-reduced-motion: reduce) { .flip-inner { transition: none; } }
+  @media (max-width: 1100px) { .two-col::before{display:none} }
+  @media (max-width: 980px) { .two-col { grid-template-columns: 1fr; } .flip-grid{ grid-template-columns: repeat(2, 1fr);} .status-grid{grid-template-columns:1fr} .checkcards{grid-template-columns:1fr} }
+  @media (max-width: 620px) { .flip-grid{ grid-template-columns: 1fr; } }
+
+  .back-to-top { position: fixed; bottom: 40px; right: 40px; background: var(--moss); color: var(--off-white); padding: 14px 18px; border-radius: 50%; font-size: 1.2rem; text-align: center; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2); display: none; }
+  .back-to-top:hover { background: #1b6a60; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>KI-Leitfaden bei DES Workspace</h1>
+    <p class="lead">Dein interaktiver Guide für sicheren, verantwortungsvollen und inspirierenden Umgang mit Künstlicher Intelligenz.</p>
+  </header>
+
+  <section>
+    <h2>💡 Einführung</h2>
+    <p>Dieser Leitfaden hilft dir, KI-Tools wie ChatGPT, Claude, Gemini oder Copilot sicher, verantwortungsvoll und effektiv zu nutzen. Du erfährst, welche Grundregeln gelten, wie du Daten schützt, Risiken vermeidest und Chancen optimal nutzt.</p>
+  </section>
+
+  <section>
+    <h2>🔌 Zugelassene, eingeschränkte & verbotene Tools – Was darf ich nutzen?</h2>
+    <p>Unsere IT pflegt eine Whitelist freigegebener KI‑Tools im Intranet. Hier ist der schnelle Überblick. Tippe/Klicke auf eine Karte für Details.</p>
+    <div class="status-grid">
+      <div class="status-card" tabindex="0">
+        <div class="status-head">
+          <span class="status-badge allow">✅ Freigegeben</span>
+          <h3>Geprüft & sicher nutzbar</h3>
+        </div>
+        <div class="status-content">
+          <p>Diese Tools kannst du im Tagesgeschäft nutzen. Sie erfüllen unsere Sicherheitsanforderungen.</p>
+          <ul>
+            <li>OpenAI ChatGPT <strong>Business Lizenz</strong> (unternehmenseigene Lizenz)</li>
+            <li>Microsoft <strong>365 Copilot</strong> (in Office integriert)</li>
+            <li><strong>GitHub Copilot</strong> (Softwareentwicklung mit Firmenaccount)</li>
+    
+          </ul>
+        </div>
+      </div>
+      <div class="status-card" tabindex="0">
+        <div class="status-head">
+          <span class="status-badge restrict">⚠ Eingeschränkt</span>
+          <h3>Nutzbar unter Bedingungen</h3>
+        </div>
+        <div class="status-content">
+          <p>Nur nach Rücksprache oder für definierte Teams/Einsatzzwecke. Strikte Vorgaben beachten.</p>
+          <ul>
+            <li><strong>Bildgenerierung</strong> (DALL·E, MidJourney): kreative Ideen ok, <em>keine</em> vertraulichen Bilder; Urheberrecht klären.</li>
+            <li><strong>Beta-/Experiment-Tools</strong>: nur in Absprache mit IT/Datenschutz; ggf. nur anonymisierte Daten oder Offline‑Varianten.</li>
+          </ul>
+          <p>Wenn du ein eingeschränktes Tool nutzt: halte dich an die Limitierungen (z. B. keine PII, keine Kundendaten, nur Testmaterial).</p>
+        </div>
+      </div>
+      <div class="status-card" tabindex="0">
+        <div class="status-head">
+          <span class="status-badge ban">❌ Verboten</span>
+          <h3>Nicht freigegeben / hohes Risiko</h3>
+        </div>
+        <div class="status-content">
+          <p>Nicht nutzen. Betrifft u. a. Tools ohne Datenkontrolle oder mit klaren Compliance‑Risiken.</p>
+          <ul>
+            <li>Public <strong>ChatGPT (Free)</strong> mit privaten Accounts</li>
+            <li>KI‑Services zur <strong>manipulativen Verfälschung</strong> (z. B. Deepfakes für Gesichter/Stimmen)</li>
+            <li>Tools, die <strong>gegen Gesetze/Ethik</strong> verstoßen (z. B. Social Scoring)</li>
+          </ul>
+          <p>Fehlt ein benötigtes Tool auf der Whitelist, gilt es als <em>nicht freigegeben</em> – bitte zuerst Rücksprache halten.</p>
+        </div>
+      </div>
+    </div>
+    <div class="status-note">Hinweis: Private KI‑Apps auf persönlichen Geräten strikt von Unternehmensdaten trennen. Keine Firmeninfos in privaten Tools verwenden. Bei Unsicherheit: IT‑Support ansprechen.</div>
+  </section>
+
+  <section>
+    <h2>✅ Do’s & ⛔ Don’ts</h2>
+    <div class="two-col">
+      <div class="col">
+        <div class="col-head"><span class="pill pill-do">DO’S</span><h3 style="margin:0;color:var(--moss)">Das solltest du tun</h3></div>
+        <div class="flip-grid">
+          <div class="flip-card"><div class="flip-inner" tabindex="0"><div class="flip-front do"><h3>Nur freigegebene Tools</h3></div><div class="flip-back"><p>Nutze ChatGPT Enterprise, Copilot & Co. ausschließlich mit Firmenlogin.</p></div></div></div>
+          <div class="flip-card"><div class="flip-inner" tabindex="0"><div class="flip-front do"><h3>Datensparsamkeit</h3></div><div class="flip-back"><p>Nur nötige Infos teilen, Kontext begrenzen, keine Volltexte.</p></div></div></div>
+          <div class="flip-card"><div class="flip-inner" tabindex="0"><div class="flip-front do"><h3>Anonymisieren</h3></div><div class="flip-back"><p>Namen/IDs maskieren, Dummy‑Werte nutzen, Firmenbezüge entfernen.</p></div></div></div>
+          <div class="flip-card"><div class="flip-inner" tabindex="0"><div class="flip-front do"><h3>Ergebnisse prüfen</h3></div><div class="flip-back"><p>Plausibilität, Quellen & Zahlen checken; Vier‑Augen‑Prinzip.</p></div></div></div>
+          <div class="flip-card"><div class="flip-inner" tabindex="0"><div class="flip-front do"><h3>Transparenz</h3></div><div class="flip-back"><p>KI‑Einsatz offenlegen – extern besonders wichtig.</p></div></div></div>
+          <div class="flip-card"><div class="flip-inner" tabindex="0"><div class="flip-front do"><h3>Human‑in‑the‑loop</h3></div><div class="flip-back"><p>Mensch trifft finale Entscheidungen, nicht die KI.</p></div></div></div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="col-head"><span class="pill pill-dont">DON’TS</span><h3 style="margin:0;color:var(--danger)">Das solltest du vermeiden</h3></div>
+        <div class="flip-grid">
+          <div class="flip-card"><div class="flip-inner" tabindex="0"><div class="flip-front dont"><h3>Sensible Daten</h3></div><div class="flip-back"><p>Keine Namen, Adressen, Verträge, Finanzzahlen, Quellcode posten.</p></div></div></div>
+          <div class="flip-card"><div class="flip-inner" tabindex="0"><div class="flip-front dont"><h3>Private Accounts</h3></div><div class="flip-back"><p>Keine Free‑Accounts; Firmen‑SSO nutzen für Kontrolle & Logs.</p></div></div></div>
+          <div class="flip-card"><div class="flip-inner" tabindex="0"><div class="flip-front dont"><h3>Ungeprüfte Tools</h3></div><div class="flip-back"><p>Whitelist beachten; keine „Bastellösungen“ außerhalb der Freigabe.</p></div></div></div>
+          <div class="flip-card"><div class="flip-inner" tabindex="0"><div class="flip-front dont"><h3>Blindes Vertrauen</h3></div><div class="flip-back"><p>Nicht ungeprüft übernehmen; Bias & Fehler berücksichtigen.</p></div></div></div>
+          <div class="flip-card"><div class="flip-inner" tabindex="0"><div class="flip-front dont"><h3>Volltexte hochladen</h3></div><div class="flip-back"><p>Keine kompletten Bücher/Artikel/Repos in Prompts kopieren.</p></div></div></div>
+          <div class="flip-card"><div class="flip-inner" tabindex="0"><div class="flip-front dont"><h3>Credentials in Prompts</h3></div><div class="flip-back"><p>Passwörter, API‑Keys, Tokens niemals eingeben.</p></div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>🧠 Interaktive Checkliste</h2>
+    <div class="checkcards">
+      <div class="checkcard" id="card-compliance">
+        <div class="checkcard-head">
+          <h3>„Bin ich compliant?“ – Selbstkontrolle</h3>
+          <p class="sub">Gehe die Punkte durch und beantworte ehrlich. Ziel: alle auf „Ja“.</p>
+        </div>
+        <div class="q-list" data-mode="yes-all">
+          <div class="q-row" data-id="c1"><div class="q-text"><strong>Tool‑Freigabe</strong><br><span>Nutze ich ein offiziell zugelassenes Tool?</span></div><div class="q-toggle"><input type="checkbox" id="c1"><label for="c1"></label></div><div class="q-hint">Wenn nein: stopp, erst Freigabe einholen.</div></div>
+          <div class="q-row" data-id="c2"><div class="q-text"><strong>Datensicherheit</strong><br><span>Habe ich keine vertraulichen oder personenbezogenen Daten eingegeben?</span></div><div class="q-toggle"><input type="checkbox" id="c2"><label for="c2"></label></div><div class="q-hint">Wenn doch: Prompt sofort abbrechen und Daten entfernen.</div></div>
+          <div class="q-row" data-id="c3"><div class="q-text"><strong>Anonymisierung</strong><br><span>Sind firmenspezifische Daten anonymisiert/pseudonymisiert?</span></div><div class="q-toggle"><input type="checkbox" id="c3"><label for="c3"></label></div><div class="q-hint">Z. B. statt Echtnamen Platzhalter verwenden.</div></div>
+          <div class="q-row" data-id="c4"><div class="q-text"><strong>Prüfung</strong><br><span>Habe ich das KI‑Ergebnis gegengelesen und geprüft?</span></div><div class="q-toggle"><input type="checkbox" id="c4"><label for="c4"></label></div><div class="q-hint">Faktencheck, Plausibilität, Sprache.</div></div>
+          <div class="q-row" data-id="c5"><div class="q-text"><strong>Weitergabe</strong><br><span>Habe ich für die Weiterverwendung alle nötigen Schritte unternommen?</span></div><div class="q-toggle"><input type="checkbox" id="c5"><label for="c5"></label></div><div class="q-hint">Extern: Freigabe & Hinweis auf KI‑Einsatz. Intern: Verständlichkeit sicherstellen.</div></div>
+          <div class="q-row" data-id="c6"><div class="q-text"><strong>Feedback</strong><br><span>Unsicherheiten oder Fragen an IT/Datenschutz weitergegeben?</span></div><div class="q-toggle"><input type="checkbox" id="c6"><label for="c6"></label></div><div class="q-hint">Im Zweifel lieber einmal mehr nachfragen.</div></div>
+        </div>
+        <div class="q-footer"><div class="progress"><div class="bar" style="width:0%"></div></div><div class="status" aria-live="polite"></div></div>
+      </div>
+
+      <div class="checkcard" id="card-inputgate">
+        <div class="checkcard-head">
+          <h3>„Darf ich das in die KI eingeben?“ – Prompt‑Check</h3>
+          <p class="sub">Wenn du eine dieser Fragen mit „Ja“ beantwortest, <strong>nicht eingeben</strong> – erst anonymisieren/abstrahieren.</p>
+        </div>
+        <div class="q-list" data-mode="no-all">
+          <div class="q-row" data-id="g1"><div class="q-text"><strong>Personenbezogene Daten</strong><br><span>Enthält mein Input PII (z. B. Namen, Kundennummern, E‑Mails)?</span></div><div class="q-toggle"><input type="checkbox" id="g1"><label for="g1"></label></div></div>
+          <div class="q-row" data-id="g2"><div class="q-text"><strong>Vertrauliche Firmeninfos</strong><br><span>Beinhaltet der Prompt Geheimprojekte, Finanzzahlen, Passwörter?</span></div><div class="q-toggle"><input type="checkbox" id="g2"><label for="g2"></label></div></div>
+          <div class="q-row" data-id="g3"><div class="q-text"><strong>Rechtlich/ethisch heikel</strong><br><span>Urheberrechtlich geschützter Text, sensible Details, potenziell schädlich?</span></div><div class="q-toggle"><input type="checkbox" id="g3"><label for="g3"></label></div></div>
+          <div class="q-row" data-id="g4"><div class="q-text"><strong>Externer Maßstab</strong><br><span>Würde ich dieselben Informationen einem externen Dienstleister geben?</span></div><div class="q-toggle"><input type="checkbox" id="g4"><label for="g4"></label></div></div>
+          <div class="q-row" data-id="g5"><div class="q-text"><strong>Tool‑Herkunft</strong><br><span>Ist das genutzte KI‑Tool offiziell freigegeben (nicht privat/external)?</span></div><div class="q-toggle"><input type="checkbox" id="g5"><label for="g5"></label></div></div>
+          <div class="q-row" data-id="g6"><div class="q-text"><strong>Kontext‑Risiko</strong><br><span>Könnten meine Eingaben intern/extern schädlich ausgelegt werden?</span></div><div class="q-toggle"><input type="checkbox" id="g6"><label for="g6"></label></div></div>
+        </div>
+        <div class="q-footer"><div class="progress"><div class="bar" style="width:0%"></div></div><div class="status" aria-live="polite"></div><div class="hintbox"><p><strong>Hinweis:</strong> Bei „Ja“: Prompt nicht eingeben, erst abstrahieren oder Dummy‑Werte nutzen.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>💬 FAQ & Feedback</h2>
+    <div class="faq-list">
+      <div class="faq-item"><h4>Welche Daten darf ich in ein KI-Tool eingeben?</h4><p>Nur Daten, die nicht vertraulich oder personenbezogen sind. Grundsätzlich alles, was öffentlich ist oder dessen Veröffentlichung kein Problem wäre, kannst du nutzen. Keine geheimen oder persönlichen Informationen eingeben – das ist der wichtigste Grundsatz. Wenn du einen internen Text verwenden willst, entferne oder anonymisiere sensible Details vorher.</p></div>
+      <div class="faq-item"><h4>Muss ich KI-generierte Inhalte kennzeichnen?</h4><p>Intern musst du deine Kollegen nicht jedes Mal darauf hinweisen, dass ein Text von KI mitformuliert wurde – hier zählt Transparenz im Team, falls jemand nachfragt. Extern (gegenüber Kunden oder Öffentlichkeit) gilt: Wenn ein Kunde direkt mit einer KI chattet oder eine komplett KI-generierte Nachricht erhält, muss er darüber informiert werden. Für überarbeitete KI-Texte reicht meist eine interne Dokumentation, dass KI genutzt wurde. Im Zweifel Rücksprache mit Marketing oder Compliance halten.</p></div>
+      <div class="faq-item"><h4>Wie erkenne ich, ob ein KI-Tool DSGVO-konform ist?</h4><p>Achte auf Hinweise des Anbieters (Nutzungsbedingungen, Datenschutzinfos). Unsere freigegebenen Tools wurden bereits geprüft – vertraue bevorzugt diesen. Ein Indiz für DSGVO-Konformität ist z. B., wenn der Anbieter Server in der EU betreibt oder einen AV-Vertrag anbietet. Bei Unsicherheit hilft unser Datenschutzbeauftragter weiter.</p></div>
+      <div class="faq-item"><h4>Was mache ich, wenn die KI falsche oder unsinnige Ergebnisse liefert?</h4><p>Nicht blind vertrauen! Hinterfrage die Ausgabe, formuliere deinen Prompt präziser oder stelle ihn anders. Prüfe Fakten mit anderen Quellen. Melde gravierende Fehler an unser Team – das hilft, Probleme frühzeitig zu erkennen.</p></div>
+      <div class="faq-item"><h4>Darf ich KI-Tools auch privat während der Arbeit nutzen?</h4><p>Bitte nicht mit Firmendaten. Wenn du in der Pause etwas ausprobieren möchtest, das nichts mit der Firma zu tun hat, ist das okay – aber keine internen Informationen verwenden. Alles, was du auf deinem Firmenrechner tust, unterliegt unseren Richtlinien. Nutze die Tools bevorzugt für berufliche Zwecke – dafür sind sie freigegeben.</p></div>
+      <div class="faq-item"><h4>Was passiert, wenn ich versehentlich sensible Daten eingegeben habe?</h4><p>Kein Grund zur Panik, aber sofort handeln! Beende die Sitzung, lösche die Daten (wenn möglich), dokumentiere den Vorfall und informiere sofort IT oder Datenschutz. Sie helfen, Risiken zu minimieren.</p></div>
+      <div class="faq-item"><h4>Wie kann ich neue KI-Tools vorschlagen?</h4><p>Wenn du ein Tool nützlich findest, kannst du es über unser internes Formular einreichen. IT und Datenschutz prüfen Sicherheit, Datenschutz und Lizenzen. Nach Freigabe erscheint es auf der offiziellen Whitelist.</p></div>
+      <div class="faq-item"><h4>Wie gehe ich mit urheberrechtlich geschütztem Material um?</h4><p>Verwende keine Texte, Bilder oder Code, deren Rechte du nicht besitzt oder die nicht eindeutig freigegeben sind. Prüfe Quellen und setze, wenn möglich, eigene Inhalte ein oder nutze lizenzfreie Ressourcen.</p></div>
+      <div class="faq-item"><h4>Wie erkenne ich Fake- oder Deepfake-Inhalte?</h4><p>Prüfe ungewöhnliche Quellen, Inkonsistenzen in Sprache oder Bilddetails und hinterfrage Inhalte, die stark emotionalisieren. Melde verdächtige KI-generierte Inhalte an IT oder Kommunikation.</p></div>
+      <div class="faq-item"><h4>Was, wenn mein Team unterschiedliche KI-Tools nutzt?</h4><p>Das kann aktuell vorkommen – wichtig ist, dass nur freigegebene Tools genutzt werden. Einheitliche Nutzung ist das Ziel, um Sicherheit und Qualität zu erhöhen. Klärt euch im Team oder fragt die Leitung.</p></div>
+      <div class="faq-item"><h4>Was mache ich, wenn ich mir bei einem Prompt unsicher bin?</h4><p>Wenn du zögerst, ob eine Eingabe erlaubt ist, stoppe kurz. Überprüfe, ob Daten vertraulich oder sensibel sind. Im Zweifel: lieber einmal mehr bei IT oder Datenschutz nachfragen.</p></div>
+    </div>
+    <div class="feedback-section">
+      <p class="faq-feedback-text">💡 Wir möchten unseren KI-Leitfaden stetig verbessern. Deine Meinung zählt! Teile deine Ideen, Fragen oder Vorschläge – gemeinsam machen wir unsere KI-Nutzung noch sicherer und smarter.</p>
+      <a href="https://forms.office.com/desfeedback" class="button">Feedback abgeben</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>📘 Zur offiziellen KI-Richtlinie</h2>
+    <a href="https://share.desworkspace/handbuch/ki-richtlinie" class="button">Richtlinie im Mitarbeiterhandbuch öffnen</a>
+  </section>
+
+  <div class="back-to-top" id="topBtn" aria-label="Nach oben">↑</div>
+
+<script>
+  document.querySelectorAll('.faq-item h4').forEach(f => f.addEventListener('click', () => f.parentElement.classList.toggle('active')));
+  document.querySelectorAll('.flip-inner').forEach(el => {
+    el.addEventListener('click', () => el.classList.toggle('flipped'));
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.classList.toggle('flipped'); }
+      if (e.key === 'Escape') { el.classList.remove('flipped'); }
+    });
+  });
+  document.querySelectorAll('.status-card').forEach(c=>{c.addEventListener('click',()=>c.classList.toggle('open'));c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.classList.toggle('open')}})});
+  function updateCardState(card){
+    const list=card.querySelector('.q-list');
+    const mode=list.dataset.mode;
+    const inputs=[...list.querySelectorAll('input[type="checkbox"]')];
+    const checked=inputs.filter(i=>i.checked).length;
+    const total=inputs.length;
+    const bar=card.querySelector('.bar');
+    const status=card.querySelector('.status');
+    if(!bar||!status) return;
+    if(mode==='yes-all'){
+      const pct=Math.round((checked/total)*100);
+      bar.style.width=pct+'%';
+      if(checked===total){status.textContent='Top! Alles auf Ja – dein Einsatz wirkt compliant.';status.className='status ok'}
+      else{status.textContent=`${checked}/${total} auf Ja`;status.className='status'}
+    }else{
+      const anyRisk=inputs.some(i=>i.checked);
+      const pct=Math.round(((total-checked)/total)*100);
+      bar.style.width=pct+'%';
+      if(anyRisk){status.textContent='Achtung: Mindestens ein „Ja“ → Daten nicht eingeben!';status.className='status warn'}
+      else{status.textContent='Gut: Alle Antworten auf „Nein“. Weiter so.';status.className='status ok'}
+    }
+  }
+  ['card-compliance','card-inputgate'].forEach(id=>{const card=document.getElementById(id);if(!card) return;card.querySelectorAll('input[type="checkbox"]').forEach(i=>i.addEventListener('change',()=>updateCardState(card)));updateCardState(card)});
+  const topBtn=document.getElementById('topBtn');
+  window.addEventListener('scroll',()=>{topBtn.style.display=window.scrollY>400?'block':'none';});
+  topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>
